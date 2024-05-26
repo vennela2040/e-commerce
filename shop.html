@@ -1,0 +1,115 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="./assets/css/shop.css">
+</head>
+<body>
+    <div>
+        <h2>Item in cart </h2>
+    </div>
+    <div class="sc">
+        <!-- Items will be dynamically added here -->
+    </div>
+    <div class="total-amount">
+        <h3>Total Amount: $<span id="total">0.00</span></h3>
+    </div>
+    <div class="pay-button-container">
+        <a id="pay-button" href="https://buy.stripe.com/test_6oE4ke6jJdH1crS6oo">Proceed to buy</a>
+    </div>
+
+    <script src="./assets/js/script.js"></script>
+    <script>
+        // document.addEventListener("DOMContentLoaded", () => {
+        //     const shopContainer = document.querySelector(".sc");
+
+        //     if (shopContainer) {
+        //         let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        //         cartItems.forEach((item, index) => {
+        //             // Create a shop item div
+        //             const shopItem = document.createElement("div");
+        //             shopItem.classList.add("shop-item");
+        //             shopItem.innerHTML = item;
+
+        //             // Create a remove button
+        //             const removeButton = document.createElement("button");
+        //             removeButton.classList.add("remove-button");
+        //             removeButton.innerText = "Remove";
+        //             removeButton.addEventListener("click", () => {
+        //                 // Remove item from cartItems array
+        //                 cartItems.splice(index, 1);
+        //                 // Update localStorage
+        //                 localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        //                 // Remove the shop item from the DOM
+        //                 shopItem.remove();
+        //             });
+
+        //             // Append the remove button to the shop item
+        //             shopItem.appendChild(removeButton);
+
+        //             // Append the shop item to the shop container
+        //             shopContainer.appendChild(shopItem);
+        //         });
+        //     }
+        // });
+        document.addEventListener("DOMContentLoaded", () => {
+    const shopContainer = document.querySelector(".sc");
+    const totalAmountElement = document.getElementById("total");
+
+    // Function to update the total amount
+    const updateTotalAmount = (cartItems) => {
+        let totalAmount = cartItems.reduce((total, item) => {
+            // Assuming item prices are stored in data-price attribute
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(item, 'text/html');
+            const priceElement = doc.querySelector("[data-price]");
+            const price = parseFloat(priceElement.getAttribute("data-price"));
+            return total + price;
+        }, 0);
+        totalAmountElement.innerText = totalAmount.toFixed(2);
+    };
+
+    if (shopContainer) {
+        let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        cartItems.forEach((item, index) => {
+            // Create a shop item div
+            const shopItem = document.createElement("div");
+            shopItem.classList.add("shop-item");
+            shopItem.innerHTML = item;
+
+            // Create a remove button
+            const removeButton = document.createElement("button");
+            removeButton.classList.add("remove-button");
+            removeButton.innerText = "Remove";
+            removeButton.addEventListener("click", () => {
+                // Remove item from cartItems array
+                cartItems.splice(index, 1);
+                // Update localStorage
+                localStorage.setItem("cartItems", JSON.stringify(cartItems));
+                // Remove the shop item from the DOM
+                shopItem.remove();
+                // Update total amount
+                updateTotalAmount(cartItems);
+            });
+
+            // Append the remove button to the shop item
+            shopItem.appendChild(removeButton);
+
+            // Append the shop item to the shop container
+            shopContainer.appendChild(shopItem);
+        });
+
+        // Update total amount initially
+        updateTotalAmount(cartItems);
+    }
+    setInterval(updateLocalStorage, 1000);
+});
+
+    </script>
+</body>
+</html>
